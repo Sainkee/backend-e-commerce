@@ -104,7 +104,7 @@ export const loginUser = async (req, res, next) => {
 
 export const logoutUser = async (req, res) => {
   const id = req.user._id;
-  console.log("_",req.user._id)
+  console.log("_", req.user._id);
   try {
     await User.findByIdAndUpdate(
       id,
@@ -132,7 +132,7 @@ export const refreshAccessToken = async (req, res, next) => {
       req.cookies.refreshToken || req.body.refreshToken;
 
     if (!incomingRefreshToken) {
-      throw new customError("unauthorized error", 401);
+      throw new customError("unauthorized access, send refreshToken", 401);
     }
 
     const decodedToken = jwt.verify(
@@ -147,7 +147,10 @@ export const refreshAccessToken = async (req, res, next) => {
     }
 
     if (user?.refreshToken !== incomingRefreshToken) {
-      throw new customError("refresh token expire or used", 401);
+      throw new customError(
+        "refresh token expire or used try to login again",
+        401
+      );
     }
 
     const cookieOption = {

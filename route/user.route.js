@@ -9,8 +9,6 @@ import { varifyjwt } from "../middlewere/auth.middlewere.js";
 
 const router = express.Router();
 
-// router.post("/register",registerUser)
-
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 router.route("/refresh-access").post(refreshAccessToken);
