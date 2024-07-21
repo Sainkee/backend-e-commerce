@@ -7,11 +7,10 @@ import {
 import { JWTauthentication } from "../middlewere/auth.middlewere.js";
 
 const router = express();
+router.get("/", JWTauthentication, getAllWishList);
 
-router.route("/").get(JWTauthentication, getAllWishList);
-router.route("/createwishList/:id").get(JWTauthentication, addIntoWishList);
 router
-  .route("/removewishlistitem/:id")
-  .get(JWTauthentication, removeFromWishList);
+  .post("/:id", JWTauthentication, addIntoWishList)
+  .delete("/:id", JWTauthentication, removeFromWishList);
 
 export default router;
