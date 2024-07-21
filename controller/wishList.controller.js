@@ -1,8 +1,6 @@
 import User from "../model/user.model.js";
 import customError from "../utils/error.js";
 
-
-
 export const getAllWishList = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -10,9 +8,13 @@ export const getAllWishList = async (req, res, next) => {
     if (!userId) {
       throw new customError("user not found", 404);
     }
+
     const updatedUser = await User.findById(userId).populate("wishList");
+
     res.status(200).json({
-      message: "wishlist fetched successfully",
+      message: `${
+        updatedUser.wishList.length == 0 ? "empty " : ""
+      }wishlist fetched successfully`,
       wishlist: updatedUser.wishList,
     });
   } catch (error) {
