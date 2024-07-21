@@ -2,7 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import dbConnect from "./utils/dbConnect.js";
-import router from "./route/user.route.js";
+import userRouter from "./route/user.route.js";
+import wishListRoute from "./route/wishList.route.js";
+import productRouter from "./route/product.route.js";
 import errorHandlingMiddleware from "./middlewere/errorMiddleware.js";
 import cookieParser from "cookie-parser";
 dotenv.config();
@@ -12,11 +14,15 @@ const app = express();
 
 app.use(express.json());
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 
-app.use(cookieParser())
+app.use(cookieParser());
 
-app.use("/api/v1/users", router);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/product", productRouter);
+app.use("/api/v1/wishlist", wishListRoute);
 
 dbConnect();
 

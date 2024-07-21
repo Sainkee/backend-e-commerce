@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import customError from "../utils/error.js";
 import User from "../model/user.model.js";
 
-export const varifyjwt = async (req, _, next) => {
+export const JWTauthentication = async (req, _, next) => {
   try {
     const token =
       req.cookies?.accessToken ||

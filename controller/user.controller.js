@@ -21,10 +21,12 @@ const generateAccessandRefreshToken = async (userId) => {
 };
 
 export const registerUser = async (req, res, next) => {
-  const { email, fullName, username, password } = req.body;
+  const { email, fullName, username, password, role } = req.body;
 
   if (
-    [email, fullName, username, password].some((field) => field?.trim() === "")
+    [email, fullName, username, password, role].some(
+      (field) => field?.trim() === ""
+    )
   ) {
     throw new customError("all field is required", 400);
   }
@@ -40,6 +42,7 @@ export const registerUser = async (req, res, next) => {
       fullName,
       username,
       password,
+      role,
     });
 
     await User.create(newUser);

@@ -5,13 +5,13 @@ import {
   refreshAccessToken,
   registerUser,
 } from "../controller/user.controller.js";
-import { varifyjwt } from "../middlewere/auth.middlewere.js";
+import { JWTauthentication } from "../middlewere/auth.middlewere.js";
 
 const router = express.Router();
 
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 router.route("/refresh-access").post(refreshAccessToken);
-router.route("/logout").post(varifyjwt, logoutUser);
+router.route("/logout").post(JWTauthentication, logoutUser);
 
 export default router;
