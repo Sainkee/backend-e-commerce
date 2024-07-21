@@ -10,22 +10,21 @@ import { JWTauthentication } from "../middlewere/auth.middlewere.js";
 
 const router = express.Router();
 
-
-
-router.route("/listproducts").get(getAllProducts);
+router.route("/").get(getAllProducts);
 
 // protected routes
 
 router
-  .route("/createproduct")
+  .route("/")
   .post(JWTauthentication, roleMiddleware(["SELLER", "ADMIN"]), createProduct);
 
 router
-  .route("/editproduct/:id")
-  .post(JWTauthentication, roleMiddleware(["SELLER", "ADMIN"]), editProduct);
-
-router
-  .route("/deleteproduct/:id")
-  .post(JWTauthentication, roleMiddleware(["SELLER", "ADMIN"]), deleteProduct);
+  .route("/:id")
+  .put(JWTauthentication, roleMiddleware(["SELLER", "ADMIN"]), editProduct)
+  .delete(
+    JWTauthentication,
+    roleMiddleware(["SELLER", "ADMIN"]),
+    deleteProduct
+  );
 
 export default router;
