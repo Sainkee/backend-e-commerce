@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import Cart from "./cart.model.js";
+import customError from "../utils/error.js";
+import Product from "./product.model.js";
+
 dotenv.config();
 
 const userSchema = new mongoose.Schema(
@@ -22,6 +26,13 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
+
+    cart: {
+      type: {
+        type: mongoose.Types.ObjectId,
+        ref: "Cart",
+      },
+    },
   },
 
   { timestamps: true }
@@ -76,6 +87,126 @@ userSchema.methods.removeToWishList = async function (ProductId) {
       (id) => id.toString() !== ProductId.toString()
     );
     await this.save();
+  }
+};
+
+userSchema.methods.addToCart = async function (productId, next) {
+  try {
+    if (!productId) {
+      throw new customError("productId is required ", 400);
+    }
+
+    let cart = await Cart.findOne({ user: this._id });
+    if (!cart) {
+      cart = new Cart({ user: this._id, cartItem: [] });
+    }
+
+    const existingItem = cart.cartItem.find(
+      (item) => item.product.toString() === productId.toString()
+    );
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.cartItem.push({ product: productId, quantity: 1 });
+    }
+
+    await cart.save();
+
+    this.cart = cart._id;
+    await this.save();
+  } catch (error) {
+    next(error);
+  }
+};
+
+userSchema.methods.removeToCart = async function (cartItemId) {
+  try {
+    if (!cartItemId) {
+      throw new customError("cartItemId is required ", 400);
+    }
+
+    let cart = await Cart.findOne({ user: this._id });
+    if (!cart) {
+      throw new customError("Cart not found", 404);
+    }
+
+    if (cart.cartItem.length === 0) {
+      throw new customError("Cart is empty", 400);
+    }
+    const filteredcart = cart.cartItem.filter(
+      (item) => item._id.toString() !== cartItemId.toString()
+    );
+
+    cart.cartItem = filteredcart;
+    await cart.save();
+  } catch (error) {
+    throw new customError("product not found", 400);
+  }
+};
+
+userSchema.methods.clearCart = async function (next) {
+  try {
+    let cart = await Cart.findOne({ user: this._id });
+    if (!cart) {
+      throw new customError("Cart not found", 404);
+    }
+
+    cart.cartItem = [];
+    await cart.save();
+    return cart;
+  } catch (error) {
+    next(error);
+  }
+};
+
+userSchema.methods.getCart = async function (next) {
+  try {
+    let cart = await Cart.findOne({ user: this._id }).populate(
+      "cartItem.product"
+    );
+    if (!cart) {
+      throw new customError("Cart not found", 404);
+    }
+
+    return cart;
+  } catch (error) {
+    next(error);
+  }
+};
+
+userSchema.methods.updateCartItemQuantity = async function (
+  productId,
+  quantity,
+  next
+) {
+  try {
+    if (!productId) {
+      throw new customError("productId is required ", 400);
+    }
+
+    if (quantity < 1) {
+      throw new customError("Quantity must be at least 1", 400);
+    }
+
+    let cart = await Cart.findOne({ user: this._id });
+    if (!cart) {
+      throw new customError("Cart not found", 404);
+    }
+
+    const item = cart.cartItem.find(
+      (item) => item.product.toString() === productId.toString()
+    );
+
+    if (item) {
+      item.quantity = quantity;
+      await cart.save();
+      return cart;
+    } else {
+      throw new customError("Product not found in cart", 404);
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
