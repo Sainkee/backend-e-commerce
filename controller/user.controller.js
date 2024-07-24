@@ -107,7 +107,7 @@ export const loginUser = async (req, res, next) => {
 
 export const logoutUser = async (req, res) => {
   const id = req.user._id;
-  console.log("_", req.user._id);
+
   try {
     await User.findByIdAndUpdate(
       id,
@@ -121,7 +121,7 @@ export const logoutUser = async (req, res) => {
 
     return res
       .status(200)
-      .clearCookie("accessTocken", cookieOption)
+      .clearCookie("accessToken", cookieOption)
       .clearCookie("refreshToken", cookieOption)
       .json({ message: "user logged out" });
   } catch (error) {

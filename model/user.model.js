@@ -27,12 +27,12 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
-    cart: {
-      type: {
+    cart: [
+      {
         type: mongoose.Types.ObjectId,
         ref: "Cart",
       },
-    },
+    ],
   },
 
   { timestamps: true }
