@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema(
         ref: "Cart",
       },
     ],
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: Date },
   },
 
   { timestamps: true }
@@ -73,6 +75,20 @@ userSchema.methods.generateAccessToken = function () {
       expiresIn: process.env.ACCESS_EXPIRY,
     }
   );
+};
+
+userSchema.methods.generateResetPasswordToken = function () {
+  const resetToken = jwt.sign(
+    { _id: this._id },
+    process.env.RESET_TOKEN_KEY,
+    { expiresIn: process.env.RESET_EXPIRY } // e.g., '1h' for 1 hour
+  );
+
+  // Set reset token and expire fields
+  this.resetPasswordToken = resetToken;
+  this.resetPasswordExpire = Date.now() + parseInt(60 * 60 * 1000); // Convert to milliseconds
+
+  return resetToken;
 };
 
 userSchema.methods.addToWishList = async function (ProductId) {
