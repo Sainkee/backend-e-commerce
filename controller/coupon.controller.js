@@ -1,4 +1,4 @@
-import Coupen from "../model/coupen.model.js";
+import Coupon from "../model/coupon.model.js";
 import customError from "../utils/error.js";
 
 // Utility function to check if a date is in the past
@@ -9,7 +9,7 @@ const dateIsPast = (givenDate) => {
 };
 
 // Create a new coupon
-export const createCoupen = async (req, res, next) => {
+export const createCoupon = async (req, res, next) => {
   const userId = req.user._id;
   const userRole = req.user.role;
   const { code, expirationDate, discountType, discountValue } = req.body;
@@ -34,12 +34,12 @@ export const createCoupen = async (req, res, next) => {
       throw new customError("Invalid discount type", 400);
     }
 
-    const existingCoupon = await Coupen.findOne({ code });
+    const existingCoupon = await Coupon.findOne({ code });
     if (existingCoupon) {
       throw new customError("Coupon code already exists", 400);
     }
 
-    const newCoupen = {
+    const newCoupon = {
       expirationDate,
       discountType,
       discountValue,
@@ -47,20 +47,20 @@ export const createCoupen = async (req, res, next) => {
       createdBy: userId,
     };
 
-    const savedCoupen = await Coupen.create(newCoupen);
+    const savedCoupon = await Coupon.create(newCoupon);
 
     res
       .status(200)
-      .json({ message: "Coupon created successfully", savedCoupen });
+      .json({ message: "Coupon created successfully", savedCoupon });
   } catch (error) {
     next(error);
   }
 };
 
 // Get all active coupons
-export const getAllActiveCoupen = async (req, res, next) => {
+export const getAllActiveCoupon = async (req, res, next) => {
   try {
-    const allCoupons = await Coupen.find({ isActive: true });
+    const allCoupons = await Coupon.find({ isActive: true });
 
     return res.json(allCoupons);
   } catch (error) {
@@ -70,11 +70,11 @@ export const getAllActiveCoupen = async (req, res, next) => {
 };
 
 // Get a specific coupon by ID
-export const getCoupenById = async (req, res, next) => {
+export const getCouponById = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const coupon = await Coupen.findById(id);
+    const coupon = await Coupon.findById(id);
     if (!coupon) {
       throw new customError("Coupon not found", 404);
     }
@@ -86,7 +86,7 @@ export const getCoupenById = async (req, res, next) => {
 };
 
 // Update a coupon
-export const updateCoupen = async (req, res, next) => {
+export const updateCoupon = async (req, res, next) => {
   const { id } = req.params;
   const userId = req.user._id;
   const userRole = req.user.role;
@@ -97,7 +97,7 @@ export const updateCoupen = async (req, res, next) => {
       throw new customError("Unauthorized request", 400);
     }
 
-    const coupon = await Coupen.findById(id);
+    const coupon = await Coupon.findById(id);
     if (!coupon) {
       throw new customError("Coupon not found", 404);
     }
@@ -118,18 +118,18 @@ export const updateCoupen = async (req, res, next) => {
     coupon.discountValue = discountValue;
     coupon.updatedBy = userId;
 
-    const updatedCoupen = await coupon.save();
+    const updatedCoupon = await coupon.save();
 
     res
       .status(200)
-      .json({ message: "Coupon updated successfully", updatedCoupen });
+      .json({ message: "Coupon updated successfully", updatedCoupon });
   } catch (error) {
     next(error);
   }
 };
 
 // Delete a coupon
-export const deleteCoupen = async (req, res, next) => {
+export const deleteCoupon = async (req, res, next) => {
   const { id } = req.params;
   const userRole = req.user.role;
 
@@ -138,7 +138,7 @@ export const deleteCoupen = async (req, res, next) => {
       throw new customError("Unauthorized request", 400);
     }
 
-    const coupon = await Coupen.findByIdAndDelete(id);
+    const coupon = await Coupon.findByIdAndDelete(id);
     if (!coupon) {
       throw new customError("Coupon not found", 404);
     }
@@ -152,7 +152,7 @@ export const deleteCoupen = async (req, res, next) => {
 // Get all coupons
 export const getAllCoupons = async (req, res) => {
   try {
-    const allCoupons = await Coupen.find();
+    const allCoupons = await Coupon.find();
 
     return res.json(allCoupons);
   } catch (error) {

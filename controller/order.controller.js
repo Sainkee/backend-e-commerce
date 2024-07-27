@@ -1,9 +1,11 @@
 import Cart from "../model/cart.model.js";
+import Coupon from "../model/coupon.model.js";
 import Order from "../model/order.model.js";
 import customError from "../utils/error.js";
 
 export const createOrder = async (req, res, next) => {
   const userId = req.user._id;
+  const { couponCode } = req.body;
 
   try {
     const cart = await Cart.findOne({ user: userId }).populate({
@@ -12,13 +14,46 @@ export const createOrder = async (req, res, next) => {
     });
 
     if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
+      throw new customError("Cart not found", 404);
     }
 
     // Calculate total price
-    const totalPrice = cart.cartItem.reduce((acc, item) => {
+    let totalPrice = cart.cartItem.reduce((acc, item) => {
       return acc + item.quantity * item.product.price;
     }, 0);
+
+    console.log(totalPrice, "bfeore");
+
+    let coupon;
+    if (couponCode) {
+      coupon = await Coupon.findOne({ code: couponCode, isActive: true });
+
+      if (!coupon) {
+        throw new customError("Invalid or expired coupon code", 400);
+      }
+
+      // Check coupon expiration
+      if (coupon.expirationDate < new Date()) {
+        throw new customError("Coupon code has expired", 400);
+      }
+
+      // Apply discount
+      if (coupon.discountType === "percentage") {
+        totalPrice -= totalPrice * (coupon.discountValue / 100);
+      } else if (coupon.discountType === "amount") {
+        totalPrice -= coupon.discountValue;
+      }
+
+      console.log(totalPrice, "after");
+
+      if (totalPrice < 0) {
+        totalPrice = 0;
+      }
+
+      // Mark the coupon as inactive after use
+      coupon.isActive = false;
+      await coupon.save();
+    }
 
     // Create the order
     const newOrder = new Order({
@@ -29,6 +64,7 @@ export const createOrder = async (req, res, next) => {
         price: item.product.price,
       })),
       totalPrice,
+      coupon: coupon ? couponCode : undefined,
     });
 
     await newOrder.save();

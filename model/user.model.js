@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import Cart from "./cart.model.js";
 import customError from "../utils/error.js";
 import Product from "./product.model.js";
+import Address from "./addresh.model.js";
 
 dotenv.config();
 
@@ -35,6 +36,8 @@ const userSchema = new mongoose.Schema(
     ],
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },
+    billingAddresses: [{ type: mongoose.Types.ObjectId, ref: "Address" }],
+    shippingAddresses: [{ type: mongoose.Types.ObjectId, ref: "Address" }],
   },
 
   { timestamps: true }
@@ -225,6 +228,9 @@ userSchema.methods.updateCartItemQuantity = async function (
     next(error);
   }
 };
+
+
+
 
 const User = mongoose.model("User", userSchema);
 

@@ -18,6 +18,9 @@ const orederSchema = Schema(
       },
     ],
     totalPrice: { type: Number, required: true },
+    coupon: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
