@@ -33,14 +33,14 @@ const productSchema = new mongoose.Schema(
       min: 0, // Discounted price should also be a non-negative number
     },
     brand: {
-      type: String,
-      trim: true,
-      lowercase: true,
+      type: mongoose.Types.ObjectId,
+      required: true,
     },
     category: {
       type: String,
       trim: true,
       lowercase: true,
+      enum: [],
     },
     image: {
       type: String,
