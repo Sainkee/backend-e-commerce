@@ -35,28 +35,75 @@ Requests:
 Get Wishlist: GET https://santoshecomm.onrender.com/api/v1/wishlist
 Add to Wishlist: POST https://santoshecomm.onrender.com/api/v1/wishlist/669bcc56eb68253aa8edee76
 Remove from Wishlist: DELETE https://santoshecomm.onrender.com/api/v1/wishlist/669bcc56eb68253aa8edee76
-4. Cart
-Folder ID: be9a4d85-d443-4ade-83fe-96467e30e3e4
-Created: 2024-07-24
-Requests:
-Add to Cart: POST https://santoshecomm.onrender.com/api/v1/cart/669bccec5218946e836456ce
-Clear Cart: DELETE https://santoshecomm.onrender.com/api/v1/cart
-Update Item in Cart: PUT https://santoshecomm.onrender.com/api/v1/cart/66a0e92516eb537f81e731be
-5. Coupon
-Folder ID: 89e139e5-77d3-4bd3-ae2d-29e52c4ddfe8
-Created: 2024-07-24
-6. Order
-Folder ID: d03affc5-aebe-4902-ae7e-21e4dc7cad14
-Created: 2024-07-25
-7. Address
-Folder ID: 7f969c68-555a-4ff3-80de-b0f84a3c40a4
-Created: 2024-07-27
-8. Brand
-Folder ID: e19eed0a-036a-4318-8123-cd32a3d86844
-Created: 2024-07-27
-9. Payment
-Folder ID: 3de20d9f-42e2-4803-bace-013f0b005b8a
-Created: 2024-07-28
+4.Cart Endpoints:
+
+Add to cart:
+URL: https://santoshecomm.onrender.com/api/v1/cart/669bccec5218946e836456ce
+Method: POST
+Clear cart:
+URL: https://santoshecomm.onrender.com/api/v1/cart
+Method: DELETE
+Update item in cart:
+URL: https://santoshecomm.onrender.com/api/v1/cart/66a0e92516eb537f81e731be
+Method: PUT
+Body: { "quantity": 5 }
+Get all cart items:
+URL: https://santoshecomm.onrender.com/api/v1/cart
+Method: GET
+Remove item from cart:
+URL: https://santoshecomm.onrender.com/api/v1/cart/66a0e92516eb537f81e731be
+Method: DELETE
+Coupon Endpoints:
+
+Create coupon:
+URL: https://santoshecomm.onrender.com/api/v1/coupon/createCoupon
+Method: POST
+Body:
+json
+Copy code
+{
+  "code": "WINTERDEAL",
+  "discountType": "amount",
+  "discountValue": 20,
+  "expirationDate": "2025-12-25"
+}
+Get all coupons:
+URL: https://santoshecomm.onrender.com/api/v1/coupon/
+Method: GET
+Delete coupon by ID:
+URL: https://santoshecomm.onrender.com/api/v1/coupon/66a1f6096f1346a9f2411407
+Method: DELETE
+Update coupon by ID:
+URL: https://santoshecomm.onrender.com/api/v1/coupon/66a1e1faa5b385e9643c64cb
+Method: PUT
+Body:
+json
+
+{
+  "discountType": "percentage",
+  "discountValue": 50,
+  "expirationDate": "2025-12-25"
+}
+Order Endpoints:
+
+Create order:
+URL: https://santoshecomm.onrender.com/api/v1/order/
+Method: POST
+Body: { "couponCode": "WINTERDEAL" }
+Get all orders:
+URL: https://santoshecomm.onrender.com/api/v1/order/
+Method: GET
+Delete order:
+URL: https://santoshecomm.onrender.com/api/v1/order/66a4776f8f6f97c26c6cd9e9
+Method: DELETE
+Get single order:
+URL: https://santoshecomm.onrender.com/api/v1/order/66a3635e79047a67b03f322a
+Method: GET
+Update order:
+URL: https://santoshecomm.onrender.com/api/v1/order/66a3635e79047a67b03f322a
+Method: PUT
+Body: { "status": "shipped" }
+
 Usage
 To use this collection, import it into your Thunder Client application. Each folder contains various requests that can be executed to interact with the e-commerce API endpoints. Make sure to set the appropriate headers, parameters, and request bodies as required by each endpoint.
 
