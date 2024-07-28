@@ -10,8 +10,10 @@ import couponRouter from "./route/coupon.route.js";
 import orderRouter from "./route/order.route.js";
 import brandRouter from "./route/brand.route.js";
 import addressRouter from "./route/address.route.js";
+import paymentRouter from "./route/payment.route.js";
 import errorHandlingMiddleware from "./middlewere/errorMiddleware.js";
 import cookieParser from "cookie-parser";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 400;
@@ -34,6 +36,7 @@ app.use("/api/v1/coupon", couponRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/address", addressRouter);
 app.use("/api/v1/brand", brandRouter);
+app.use("/api/v1/payment", paymentRouter);
 
 dbConnect();
 
