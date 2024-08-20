@@ -12,7 +12,7 @@ export const addProductIntoCart = async (req, res, next) => {
     }
     await user.addToCart(productId, next);
 
-    res.status(200).json({ message: "Product added to cart successfully" });
+    res.status(200).json({ message: "Product added to cart successfully",cart:user.cart});
   } catch (error) {
     next(error);
   }

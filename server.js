@@ -16,7 +16,7 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 400;
+const PORT = process.env.PORT || 4001;
 
 const app = express();
 
@@ -27,6 +27,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use(cookieParser());
+app.use((req, res, next) => {
+  console.log(req.url);
+
+  next();
+});
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/product", productRouter);

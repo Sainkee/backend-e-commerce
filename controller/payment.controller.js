@@ -2,12 +2,12 @@ import Stripe from "stripe";
 import Order from "../model/order.model.js";
 import customError from "../utils/error.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2022-11-15",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = async (req, res, next) => {
   const { orderId } = req.body;
+
+   
 
   try {
     const order = await Order.findById(orderId);
@@ -18,6 +18,7 @@ export const createPaymentIntent = async (req, res, next) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(Number(order.totalPrice) * 100),
       currency: "usd",
+      receipt_email:"sainkee1997@gmail.com",
 
       metadata: { orderId: order._id.toString() },
     });
@@ -26,6 +27,7 @@ export const createPaymentIntent = async (req, res, next) => {
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
+    console.error(error+"payment intent");
     next(error);
   }
 };
@@ -61,6 +63,8 @@ export const checkout = async (req, res, next) => {
 
     res.status(200).json({ url: session.url });
   } catch (error) {
+    console.error(error+"checkout");
     next(error);
+
   }
 };

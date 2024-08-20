@@ -43,7 +43,9 @@ export const createBrand = async (req, res, next) => {
       await brand.save();
       res.status(201).json({ message: "Brand created successfully", brand });
     }
-
+  } catch (error) {
+    next(error);
+  } finally {
     fs.unlink(req.file.path, (err) => {
       if (err) {
         console.error("Failed to delete local file:", err);
@@ -51,8 +53,6 @@ export const createBrand = async (req, res, next) => {
         console.log("Local file deleted successfully");
       }
     });
-  } catch (error) {
-    next(error);
   }
 };
 
